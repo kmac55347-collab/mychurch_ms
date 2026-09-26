@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { Member, UserProfile, UserRole } from '../types/database.types';
-import { sampleUsers, sampleMembers } from '../lib/initialData';
 import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabase';
 
 interface AuthContextType {
@@ -190,7 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // fallback
       }
     }
-    return sampleUsers;
+    return [];
   });
 
   const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
@@ -202,8 +201,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // fallback
       }
     }
-    // Default to Super Admin (Kofi Mensah-Bonsu)
-    return sampleUsers[1] || sampleUsers[0];
+    return {
+      id: 'guest-user',
+      first_name: 'Guest',
+      last_name: 'User',
+      email: 'guest@local',
+      role: 'data_entry',
+      is_active: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
   });
 
   const [session, setSession] = useState<Session | null>(null);
@@ -219,7 +226,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (found) return found;
       }
     } catch {}
-    return sampleMembers.find((m) => m.id === activeMemberId || m.member_id === activeMemberId) || null;
+    return null;
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -351,7 +358,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const switchUser = (userId: string) => {
-    const target = usersList.find((u) => u.id === userId) || sampleUsers.find((u) => u.id === userId);
+    const target = usersList.find((u) => u.id === userId);
     if (target) {
       setCurrentUser(target);
       localStorage.setItem('gwcc_active_user', JSON.stringify(target));
@@ -419,7 +426,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // 2. Check local church staff accounts (offline / local directory)
-    const staff = usersList.find((u) => u.email.toLowerCase() === cleanEmail) || sampleUsers.find((u) => u.email.toLowerCase() === cleanEmail);
+    const staff = usersList.find((u) => u.email.toLowerCase() === cleanEmail);
     if (staff) {
       if (!password || password.trim().length < 4) {
         return { success: false, message: 'Please provide a valid password.' };
@@ -574,7 +581,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, message: 'Please provide your Member ID, Phone Number, or Email address.' };
     }
 
-    let allMembers: Member[] = sampleMembers;
+    let allMembers: Member[] = [];
     try {
       const stored = localStorage.getItem('gwcc_members');
       if (stored) {

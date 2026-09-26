@@ -20,25 +20,7 @@ import {
   ChurchSettings,
   PaymentMethod,
 } from '../types/database.types';
-import {
-  initialSettings,
-  sampleMembers,
-  sampleVisitors,
-  sampleServices,
-  sampleAttendance,
-  sampleHeadcounts,
-  sampleGiving,
-  samplePledgeCampaigns,
-  samplePledges,
-  sampleExpenses,
-  sampleMinistries,
-  sampleSmallGroups,
-  sampleEvents,
-  samplePastoralCare,
-  samplePrayerRequests,
-  sampleCommunications,
-  sampleAuditLogs,
-} from '../lib/initialData';
+import { initialSettings } from '../lib/initialData';
 import { useAuth } from './AuthContext';
 import {
   isSupabaseConfigured,
@@ -235,40 +217,22 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       general_secretary: generalSecretary,
     };
   });
-  const [members, setMembers] = useState<Member[]>(() => {
-    const stored = loadFromStorage<Member[]>('members', sampleMembers);
-    const storedIds = new Set(stored.map((m) => m.id));
-    const missing = sampleMembers.filter((m) => !storedIds.has(m.id));
-    return missing.length > 0 ? [...stored, ...missing] : stored;
-  });
-  const [visitors, setVisitors] = useState<Visitor[]>(() => loadFromStorage('visitors', sampleVisitors));
-  const [services, setServices] = useState<ChurchService[]>(() => loadFromStorage('services', sampleServices));
-  const [attendance, setAttendance] = useState<AttendanceRecord[]>(() => loadFromStorage('attendance', sampleAttendance));
-  const [headcounts, setHeadcounts] = useState<HeadcountRecord[]>(() => loadFromStorage('headcounts', sampleHeadcounts));
-  const [giving, setGiving] = useState<GivingRecord[]>(() => loadFromStorage('giving', sampleGiving));
-  const [campaigns, setCampaigns] = useState<PledgeCampaign[]>(() => loadFromStorage('campaigns', samplePledgeCampaigns));
-  const [pledges, setPledges] = useState<PledgeRecord[]>(() => loadFromStorage('pledges', samplePledges));
-  const [expenses, setExpenses] = useState<ExpenseRecord[]>(() => {
-    const loaded = loadFromStorage<ExpenseRecord[]>('expenses', sampleExpenses);
-    return loaded.map((exp) => {
-      if (
-        !exp.approved_by ||
-        exp.approved_by.includes('Agyemang-Prempeh') ||
-        exp.approved_by.includes('Emmanuel Agyemang') ||
-        exp.approved_by.includes('Emmanuel Appiah')
-      ) {
-        return { ...exp, approved_by: 'Prophet Elisha K. Richard' };
-      }
-      return exp;
-    });
-  });
-  const [ministries, setMinistries] = useState<Ministry[]>(() => loadFromStorage('ministries', sampleMinistries));
-  const [smallGroups, setSmallGroups] = useState<SmallGroup[]>(() => loadFromStorage('smallGroups', sampleSmallGroups));
-  const [events, setEvents] = useState<ChurchEvent[]>(() => loadFromStorage('events', sampleEvents));
-  const [pastoralCare, setPastoralCare] = useState<PastoralCareRecord[]>(() => loadFromStorage('pastoralCare', samplePastoralCare));
-  const [prayerRequests, setPrayerRequests] = useState<PrayerRequest[]>(() => loadFromStorage('prayerRequests', samplePrayerRequests));
-  const [communications, setCommunications] = useState<CommunicationRecord[]>(() => loadFromStorage('communications', sampleCommunications));
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => loadFromStorage('auditLogs', sampleAuditLogs));
+  const [members, setMembers] = useState<Member[]>(() => loadFromStorage<Member[]>('members', []));
+  const [visitors, setVisitors] = useState<Visitor[]>(() => loadFromStorage('visitors', []));
+  const [services, setServices] = useState<ChurchService[]>(() => loadFromStorage('services', []));
+  const [attendance, setAttendance] = useState<AttendanceRecord[]>(() => loadFromStorage('attendance', []));
+  const [headcounts, setHeadcounts] = useState<HeadcountRecord[]>(() => loadFromStorage('headcounts', []));
+  const [giving, setGiving] = useState<GivingRecord[]>(() => loadFromStorage('giving', []));
+  const [campaigns, setCampaigns] = useState<PledgeCampaign[]>(() => loadFromStorage('campaigns', []));
+  const [pledges, setPledges] = useState<PledgeRecord[]>(() => loadFromStorage('pledges', []));
+  const [expenses, setExpenses] = useState<ExpenseRecord[]>(() => loadFromStorage('expenses', []));
+  const [ministries, setMinistries] = useState<Ministry[]>(() => loadFromStorage('ministries', []));
+  const [smallGroups, setSmallGroups] = useState<SmallGroup[]>(() => loadFromStorage('smallGroups', []));
+  const [events, setEvents] = useState<ChurchEvent[]>(() => loadFromStorage('events', []));
+  const [pastoralCare, setPastoralCare] = useState<PastoralCareRecord[]>(() => loadFromStorage('pastoralCare', []));
+  const [prayerRequests, setPrayerRequests] = useState<PrayerRequest[]>(() => loadFromStorage('prayerRequests', []));
+  const [communications, setCommunications] = useState<CommunicationRecord[]>(() => loadFromStorage('communications', []));
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => loadFromStorage('auditLogs', []));
 
   // Supabase states
   const [supabaseConfig, setSupabaseConfig] = useState(getStoredSupabaseConfig());
@@ -1541,28 +1505,29 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   // RESET
   const resetToSampleData = () => {
     setSettings(initialSettings);
-    setMembers(sampleMembers);
-    setVisitors(sampleVisitors);
-    setServices(sampleServices);
-    setAttendance(sampleAttendance);
-    setHeadcounts(sampleHeadcounts);
-    setGiving(sampleGiving);
-    setCampaigns(samplePledgeCampaigns);
-    setPledges(samplePledges);
-    setExpenses(sampleExpenses);
-    setMinistries(sampleMinistries);
-    setSmallGroups(sampleSmallGroups);
-    setEvents(sampleEvents);
-    setPastoralCare(samplePastoralCare);
-    setPrayerRequests(samplePrayerRequests);
-    setCommunications(sampleCommunications);
-    setAuditLogs(sampleAuditLogs);
+    setMembers([]);
+    setVisitors([]);
+    setServices([]);
+    setAttendance([]);
+    setHeadcounts([]);
+    setGiving([]);
+    setCampaigns([]);
+    setPledges([]);
+    setExpenses([]);
+    setMinistries([]);
+    setSmallGroups([]);
+    setEvents([]);
+    setPastoralCare([]);
+    setPrayerRequests([]);
+    setCommunications([]);
+    setAuditLogs([]);
     try {
-      localStorage.clear();
+      const keys = Object.keys(localStorage).filter((key) => key.startsWith('gwcc_'));
+      keys.forEach((key) => localStorage.removeItem(key));
     } catch {
       // Ignore
     }
-    logAction('RESET_SYSTEM', 'System', 'Restored system default sample records');
+    logAction('RESET_SYSTEM', 'System', 'Cleared mock data and reset to empty operational state');
   };
 
   const contextValue = React.useMemo<ChurchDataContextType>(
