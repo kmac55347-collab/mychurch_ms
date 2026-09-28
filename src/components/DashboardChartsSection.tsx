@@ -45,143 +45,115 @@ export const DashboardChartsSection: React.FC<DashboardChartsSectionProps> = ({ 
   const totalRegisteredMembers = members.filter((m) => !m.is_archived).length;
   const activeRegisteredMembers = members.filter((m) => m.status === 'active' && !m.is_archived).length;
 
-  // 1. Member Growth Trends Data for the last 6 months (April 2026 - September 2026)
+  const getMemberJoinDate = (member: any) => {
+    const rawDate = member?.membership_date || member?.date_joined || member?.first_visit_date;
+    if (!rawDate) return null;
+
+    const parsed = new Date(rawDate);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  };
+
+  // 1. Member Growth Trends Data for the last 6 months based on actual join dates
   const memberGrowthData = useMemo(() => {
-    // Dynamic adjustment for current month (September) based on live context data
-    const baseApr = 172;
-    const baseMay = 188;
-    const baseJun = 204;
-    const baseJul = 219;
-    const baseAug = 238;
-    // Current month September reflects actual congregation size
-    const currentTotal = Math.max(254, totalRegisteredMembers);
-    const currentActive = Math.max(232, activeRegisteredMembers);
+    const months: Array<{ key: string; label: string; short: string; start: Date; end: Date }> = [];
+    const current = new Date();
+    current.setDate(1);
+    current.setHours(0, 0, 0, 0);
 
-    return [
-      {
-        month: 'Apr 2026',
-        shortMonth: 'Apr',
-        totalMembers: baseApr,
-        activeMembers: 156,
-        newMembers: 12,
-        newConverts: 5,
-        netGain: 12,
-      },
-      {
-        month: 'May 2026',
-        shortMonth: 'May',
-        totalMembers: baseMay,
-        activeMembers: 170,
-        newMembers: 16,
-        newConverts: 7,
-        netGain: 16,
-      },
-      {
-        month: 'Jun 2026',
-        shortMonth: 'Jun',
-        totalMembers: baseJun,
-        activeMembers: 185,
-        newMembers: 16,
-        newConverts: 9,
-        netGain: 16,
-      },
-      {
-        month: 'Jul 2026',
-        shortMonth: 'Jul',
-        totalMembers: baseJul,
-        activeMembers: 198,
-        newMembers: 15,
-        newConverts: 8,
-        netGain: 15,
-      },
-      {
-        month: 'Aug 2026',
-        shortMonth: 'Aug',
-        totalMembers: baseAug,
-        activeMembers: 214,
-        newMembers: 19,
-        newConverts: 12,
-        netGain: 19,
-      },
-      {
-        month: 'Sep 2026',
-        shortMonth: 'Sep',
-        totalMembers: currentTotal,
-        activeMembers: currentActive,
-        newMembers: currentTotal - baseAug,
-        newConverts: members.filter((m) => m.status === 'new_convert').length || 10,
-        netGain: currentTotal - baseAug,
-      },
-    ];
-  }, [totalRegisteredMembers, activeRegisteredMembers, members]);
+    for (let index = 5; index >= 0; index -= 1) {
+      const monthDate = new Date(current.getFullYear(), current.getMonth() - index, 1);
+      const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+      const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0, 23, 59, 59, 999);
 
-  // 2. Attendance Distribution Data for the last 6 months (April 2026 - September 2026)
+      months.push({
+        key: `${monthDate.getFullYear()}-${String(monthDate.getMonth() + 1).padStart(2, '0')}`,
+        label: monthDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        short: monthDate.toLocaleDateString('en-US', { month: 'short' }),
+        start: monthStart,
+        end: monthEnd,
+      });
+    }
+
+    return months.map(({ label, short, start, end }) => {
+      const monthMembers = members.filter((member) => {
+        const joinDate = getMemberJoinDate(member);
+        if (!joinDate || member.is_archived) return false;
+        return joinDate >= start && joinDate <= end;
+      });
+
+      const cumulativeMembers = members.filter((member) => {
+        const joinDate = getMemberJoinDate(member);
+        if (!joinDate || member.is_archived) return false;
+        return joinDate <= end;
+      });
+
+      const cumulativeActiveMembers = members.filter((member) => {
+        const joinDate = getMemberJoinDate(member);
+        if (!joinDate || member.is_archived || member.status !== 'active') return false;
+        return joinDate <= end;
+      });
+
+      const newConverts = monthMembers.filter((member) => member.status === 'new_convert').length;
+
+      return {
+        month: label,
+        shortMonth: short,
+        totalMembers: cumulativeMembers.length,
+        activeMembers: cumulativeActiveMembers.length,
+        newMembers: monthMembers.length,
+        newConverts,
+        netGain: monthMembers.length,
+      };
+    });
+  }, [members]);
+
+  // 2. Attendance Distribution Data for the last 6 months based on actual attendance records
   const attendanceDistributionData = useMemo(() => {
-    return [
-      {
-        month: 'Apr 2026',
-        shortMonth: 'Apr',
-        // By Service
-        firstService: 320,
-        secondService: 460,
-        midweekPrayer: 180,
-        // By Attendee Type
-        regularMembers: 840,
-        visitors: 120,
-        total: 960,
-      },
-      {
-        month: 'May 2026',
-        shortMonth: 'May',
-        firstService: 345,
-        secondService: 490,
-        midweekPrayer: 195,
-        regularMembers: 900,
-        visitors: 130,
-        total: 1030,
-      },
-      {
-        month: 'Jun 2026',
-        shortMonth: 'Jun',
-        firstService: 380,
-        secondService: 530,
-        midweekPrayer: 210,
-        regularMembers: 975,
-        visitors: 145,
-        total: 1120,
-      },
-      {
-        month: 'Jul 2026',
-        shortMonth: 'Jul',
-        firstService: 410,
-        secondService: 580,
-        midweekPrayer: 230,
-        regularMembers: 1060,
-        visitors: 160,
-        total: 1220,
-      },
-      {
-        month: 'Aug 2026',
-        shortMonth: 'Aug',
-        firstService: 450,
-        secondService: 630,
-        midweekPrayer: 260,
-        regularMembers: 1165,
-        visitors: 175,
-        total: 1340,
-      },
-      {
-        month: 'Sep 2026',
-        shortMonth: 'Sep',
-        firstService: 490,
-        secondService: 690,
-        midweekPrayer: 285,
-        regularMembers: 1270,
-        visitors: 195,
-        total: 1465,
-      },
-    ];
-  }, []);
+    const months: Array<{ label: string; short: string; start: Date; end: Date }> = [];
+    const current = new Date();
+    current.setDate(1);
+    current.setHours(0, 0, 0, 0);
+
+    for (let index = 5; index >= 0; index -= 1) {
+      const monthDate = new Date(current.getFullYear(), current.getMonth() - index, 1);
+      const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+      const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0, 23, 59, 59, 999);
+
+      months.push({
+        label: monthDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        short: monthDate.toLocaleDateString('en-US', { month: 'short' }),
+        start: monthStart,
+        end: monthEnd,
+      });
+    }
+
+    return months.map(({ label, short, start, end }) => {
+      const monthRecords = attendance.filter((record) => {
+        if (record.status !== 'present') return false;
+        const recordDate = new Date(record.date);
+        if (Number.isNaN(recordDate.getTime())) return false;
+        return recordDate >= start && recordDate <= end;
+      });
+
+      const firstService = monthRecords.filter((record) => /1st|first/i.test(record.service_name || '')).length;
+      const secondService = monthRecords.filter((record) => /2nd|second|celebration/i.test(record.service_name || '')).length;
+      const midweekPrayer = monthRecords.filter((record) => /midweek|prayer|night/i.test(record.service_name || '')).length;
+
+      const regularMembers = monthRecords.filter((record) => record.person_type === 'member').length;
+      const visitors = monthRecords.filter((record) => record.person_type === 'visitor').length;
+
+      return {
+        month: label,
+        shortMonth: short,
+        firstService,
+        secondService,
+        midweekPrayer,
+        regularMembers,
+        visitors,
+        total: regularMembers + visitors,
+      };
+    });
+  }, [attendance]);
 
   // Summary Metrics calculations
   const aprTotal = memberGrowthData[0].totalMembers;

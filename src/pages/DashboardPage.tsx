@@ -123,13 +123,47 @@ export const DashboardPage: React.FC = () => {
     value,
   }));
 
-  // Chart Data: Weekly Attendance
-  const weeklyAttendanceData = [
-    { week: 'Week 1 (Sept)', members: 182, visitors: 28, total: 210 },
-    { week: 'Week 2 (Sept)', members: 195, visitors: 34, total: 229 },
-    { week: 'Week 3 (Sept)', members: 210, visitors: 42, total: 252 },
-    { week: 'Week 4 (Current)', members: 225, visitors: 38, total: 263 },
-  ];
+  // Chart Data: Weekly Attendance from real attendance records
+  const weeklyAttendanceData = React.useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const weeks: Array<{ start: Date; end: Date }> = [];
+    const dayOfWeek = (today.getDay() + 6) % 7;
+
+    for (let index = 3; index >= 0; index -= 1) {
+      const start = new Date(today);
+      const offsetFromCurrentWeek = dayOfWeek + (index * 7);
+      start.setDate(today.getDate() - offsetFromCurrentWeek);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      end.setHours(23, 59, 59, 999);
+
+      weeks.push({ start, end });
+    }
+
+    return weeks.map((week, index) => {
+      const records = attendance.filter((entry) => {
+        if (entry.status !== 'present') return false;
+        const entryDate = new Date(entry.date);
+        if (Number.isNaN(entryDate.getTime())) return false;
+        return entryDate >= week.start && entryDate <= week.end;
+      });
+
+      const members = records.filter((entry) => entry.person_type === 'member' || Boolean(entry.member_id)).length;
+      const visitors = records.filter((entry) => entry.person_type === 'visitor' || Boolean(entry.visitor_id)).length;
+      const monthShort = week.start.toLocaleDateString('en-US', { month: 'short' });
+
+      return {
+        week: index === weeks.length - 1 ? `Week ${index + 1} (Current)` : `Week ${index + 1} (${monthShort})`,
+        members,
+        visitors,
+        total: members + visitors,
+      };
+    });
+  }, [attendance]);
 
   // Upcoming birthdays this month
   const birthdayMembers = members.filter((m) => {
