@@ -147,7 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-md shadow-emerald-950/40 shrink-0 overflow-hidden p-0.5 border border-emerald-500/40">
               <img
                 src="/assets/logo.png"
-                alt="Greater Works City Church Logo"
+                alt="Church Management System Logo"
                 className="w-full h-full object-contain"
                 loading="eager"
               />
@@ -155,9 +155,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {!collapsed && (
               <div className="flex flex-col truncate">
                 <span className="font-bold text-sm text-white tracking-wide flex items-center gap-1">
-                  GWCC <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Accra</span>
+                  CMS <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">HQ</span>
                 </span>
-                <span className="text-xs text-slate-400 truncate">Greater Works City Church</span>
+                <span className="text-xs text-slate-400 truncate">Church Management System</span>
               </div>
             )}
           </div>

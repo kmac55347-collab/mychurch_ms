@@ -955,6 +955,7 @@ export async function pushAllDataToSupabase(
           return {
             ...p,
             created_at: (p as any).created_at || now,
+            updated_at: (p as any).updated_at || (p as any).created_at || now,
             amount_pledged: pledged,
             amount_paid: paid,
             balance: Math.max(0, pledged - paid),

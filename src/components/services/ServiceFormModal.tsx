@@ -22,7 +22,7 @@ export const ServiceFormModal: React.FC<ServiceFormModalProps> = ({
     day_of_week: initialService?.day_of_week || 'Sunday',
     start_time: initialService?.start_time || '08:00',
     end_time: initialService?.end_time || '10:30',
-    venue: initialService?.venue || 'Main Cathedral Sanctuary, Joma',
+    venue: initialService?.venue || 'Main Worship Hall',
     service_leader: initialService?.service_leader || '',
     preacher: initialService?.preacher || '',
     worship_leader: initialService?.worship_leader || '',
@@ -44,7 +44,7 @@ export const ServiceFormModal: React.FC<ServiceFormModalProps> = ({
       day_of_week: formData.day_of_week,
       start_time: formData.start_time,
       end_time: formData.end_time,
-      venue: formData.venue.trim() || 'Main Cathedral Sanctuary, Joma',
+      venue: formData.venue.trim() || 'Main Worship Hall',
       service_leader: formData.service_leader.trim() || undefined,
       preacher: formData.preacher.trim() || undefined,
       worship_leader: formData.worship_leader.trim() || undefined,
@@ -69,7 +69,7 @@ export const ServiceFormModal: React.FC<ServiceFormModalProps> = ({
                 {initialService ? 'Edit Church Service' : 'Schedule New Church Service'}
               </h3>
               <p className="text-xs text-emerald-200">
-                Greater Works City Church, Joma Assembly
+                Church Management System
               </p>
             </div>
           </div>

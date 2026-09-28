@@ -79,7 +79,7 @@ export interface UserProfile {
 
 export interface Member {
   id: string;
-  member_id: string; // GWCC-000001
+  member_id: string; // e.g. MEMBER-000001
   tithe_number?: string; // T-1042
   first_name: string;
   middle_name?: string;
@@ -97,7 +97,7 @@ export interface Member {
   residential_address?: string;
   city: string;
   region: string;
-  gps_address?: string; // e.g. GA-183-4921
+  gps_address?: string; // e.g. GPS-0000
   profile_photo_url?: string;
 
   // Church Information
@@ -291,6 +291,7 @@ export interface PledgeRecord {
   status: PledgeStatus;
   notes?: string;
   created_at: string;
+  updated_at?: string;
 }
 
 export type Pledge = PledgeRecord;

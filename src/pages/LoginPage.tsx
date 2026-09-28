@@ -201,10 +201,10 @@ export const LoginPage: React.FC = () => {
 
           <div className="space-y-2 pt-2">
             <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
-              Apostolic Excellence in Church Administration
+              Efficient Church Administration
             </h2>
             <p className="text-xs lg:text-sm text-emerald-100/90 leading-relaxed">
-              Empowering church leadership, pastors, finance officers, and ministry workers across Greater Works City Church with real-time membership records, attendance kiosks, giving ledgers, and pastoral care.
+              Empowering church leadership and ministry teams with real-time member records, attendance tracking, giving reports, and pastoral care tools.
             </p>
           </div>
         </div>
@@ -218,7 +218,7 @@ export const LoginPage: React.FC = () => {
             <p className="text-sm font-bold text-white flex items-center gap-1.5">
               <span>{settings.location}</span>
             </p>
-            <p className="text-[11px] text-emerald-200/70 font-mono">GhanaPost GPS: GA-183-4921</p>
+            <p className="text-[11px] text-emerald-200/70 font-mono">Location: City, Country</p>
           </div>
 
           <div className="space-y-1">
@@ -481,7 +481,7 @@ export const LoginPage: React.FC = () => {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@greaterworkscitychurch.org"
+                      placeholder="name@church.org"
                       className="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-emerald-800 focus:ring-2 focus:ring-emerald-800/20 focus:border-emerald-800 transition shadow-2xs"
                     />
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -545,7 +545,7 @@ export const LoginPage: React.FC = () => {
                     </span>
                   ) : (
                     <>
-                      <span>Sign In to GWCC Workspace</span>
+                      <span>Sign In to Workspace</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -591,7 +591,7 @@ export const LoginPage: React.FC = () => {
                       required
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
-                      placeholder="k.mensah@greaterworkscitychurch.org"
+                      placeholder="k.mensah@church.org"
                       className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-emerald-800 focus:border-emerald-800"
                     />
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -718,7 +718,7 @@ export const LoginPage: React.FC = () => {
                   <span>Church Administrative Security Protocol</span>
                 </div>
                 <p>
-                  To safeguard member data and church tithe ledgers, password resets for Greater Works City Church staff are managed through authenticated church directory channels or your IT administrator.
+                  To safeguard member data and ministry records, password resets for staff are managed through authenticated directory channels or your IT administrator.
                 </p>
               </div>
 
@@ -733,7 +733,7 @@ export const LoginPage: React.FC = () => {
                       required
                       value={recoveryEmail}
                       onChange={(e) => setRecoveryEmail(e.target.value)}
-                      placeholder="e.g. kofi.mensah@greaterworkscitychurch.org"
+                      placeholder="e.g. staff@church.org"
                       className="w-full pl-9 pr-3 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-900 focus:outline-emerald-800 focus:border-emerald-800 transition"
                     />
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />

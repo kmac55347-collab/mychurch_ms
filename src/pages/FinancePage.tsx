@@ -266,21 +266,31 @@ export const FinancePage: React.FC = () => {
 
   // Monthly Cashflow Trend
   const monthlyCashflowData = useMemo(() => {
-    return [
-      { month: 'Apr 2026', shortMonth: 'Apr', income: 14200, expenses: 9800, net: 4400 },
-      { month: 'May 2026', shortMonth: 'May', income: 16800, expenses: 11200, net: 5600 },
-      { month: 'Jun 2026', shortMonth: 'Jun', income: 18450, expenses: 12400, net: 6050 },
-      { month: 'Jul 2026', shortMonth: 'Jul', income: 19600, expenses: 13100, net: 6500 },
-      { month: 'Aug 2026', shortMonth: 'Aug', income: 21400, expenses: 14200, net: 7200 },
-      {
-        month: 'Sep 2026',
-        shortMonth: 'Sep',
-        income: Math.max(22800, totalIncome),
-        expenses: Math.max(13950, totalExpenses),
-        net: Math.max(8850, totalIncome - totalExpenses),
-      },
+    const months = [
+      { key: '2026-04', month: 'Apr 2026', shortMonth: 'Apr' },
+      { key: '2026-05', month: 'May 2026', shortMonth: 'May' },
+      { key: '2026-06', month: 'Jun 2026', shortMonth: 'Jun' },
+      { key: '2026-07', month: 'Jul 2026', shortMonth: 'Jul' },
+      { key: '2026-08', month: 'Aug 2026', shortMonth: 'Aug' },
+      { key: '2026-09', month: 'Sep 2026', shortMonth: 'Sep' },
     ];
-  }, [totalIncome, totalExpenses]);
+
+    return months.map(({ key, month, shortMonth }) => {
+      const income = giving
+        .filter((record) => record.date.startsWith(key))
+        .reduce((sum, record) => sum + record.amount, 0);
+      const monthlyExpenses = expenses
+        .filter((record) => record.date.startsWith(key))
+        .reduce((sum, record) => sum + record.amount, 0);
+
+      return { month, shortMonth, income, expenses: monthlyExpenses, net: income - monthlyExpenses };
+    });
+  }, [giving, expenses]);
+
+  const averageMonthlySurplus = useMemo(
+    () => monthlyCashflowData.reduce((sum, month) => sum + month.net, 0) / (monthlyCashflowData.length || 1),
+    [monthlyCashflowData]
+  );
 
   // Giving by Category breakdown for pie chart
   const categoryChartData = useMemo(() => {
@@ -1064,7 +1074,7 @@ export const FinancePage: React.FC = () => {
               </div>
 
               <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                <span>Average monthly surplus: <strong>GH₵ 6,200</strong></span>
+                <span>Average monthly surplus: <strong>{formatGHS(averageMonthlySurplus)}</strong></span>
                 <span className="text-emerald-700 font-semibold flex items-center gap-1">
                   Healthy Liquid Reserve <CheckCircle2 className="w-3.5 h-3.5" />
                 </span>
@@ -1143,28 +1153,28 @@ export const FinancePage: React.FC = () => {
               <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50/60">
                 <span className="text-slate-500 font-medium block">MTN Mobile Money</span>
                 <span className="text-lg font-bold text-slate-900 mt-1 block font-mono">
-                  {formatGHS(giving.filter(g => (g.payment_channel || '').includes('MTN')).reduce((s, g) => s + g.amount, 0) || 7450)}
+                  {formatGHS(giving.filter(g => (g.payment_channel || '').includes('MTN')).reduce((s, g) => s + g.amount, 0))}
                 </span>
                 <span className="text-[11px] text-emerald-700 font-semibold block mt-0.5">Primary Telco Merchant</span>
               </div>
               <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50/60">
                 <span className="text-slate-500 font-medium block">Telecel Cash</span>
                 <span className="text-lg font-bold text-slate-900 mt-1 block font-mono">
-                  {formatGHS(giving.filter(g => (g.payment_channel || '').includes('Telecel')).reduce((s, g) => s + g.amount, 0) || 1750)}
+                  {formatGHS(giving.filter(g => (g.payment_channel || '').includes('Telecel')).reduce((s, g) => s + g.amount, 0))}
                 </span>
                 <span className="text-[11px] text-slate-500 block mt-0.5">Prompt digital settlement</span>
               </div>
               <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50/60">
                 <span className="text-slate-500 font-medium block">Bank Transfer (GCB / Ecobank)</span>
                 <span className="text-lg font-bold text-slate-900 mt-1 block font-mono">
-                  {formatGHS(giving.filter(g => g.payment_method === 'bank_transfer').reduce((s, g) => s + g.amount, 0) || 2200)}
+                  {formatGHS(giving.filter(g => g.payment_method === 'bank_transfer').reduce((s, g) => s + g.amount, 0))}
                 </span>
                 <span className="text-[11px] text-slate-500 block mt-0.5">Church Treasury Main Account</span>
               </div>
               <div className="p-3.5 rounded-xl border border-slate-100 bg-slate-50/60">
                 <span className="text-slate-500 font-medium block">Physical Cash Bowl</span>
                 <span className="text-lg font-bold text-slate-900 mt-1 block font-mono">
-                  {formatGHS(giving.filter(g => g.payment_method === 'cash').reduce((s, g) => s + g.amount, 0) || 4860)}
+                  {formatGHS(giving.filter(g => g.payment_method === 'cash').reduce((s, g) => s + g.amount, 0))}
                 </span>
                 <span className="text-[11px] text-amber-700 font-semibold block mt-0.5">Sunday Counter Verified</span>
               </div>

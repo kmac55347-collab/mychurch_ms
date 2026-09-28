@@ -73,55 +73,55 @@ export const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'identity' | 'finance' | 'services' | 'supabase' | 'backup'>('identity');
 
   // General Settings state
-  const [churchName, setChurchName] = useState(settings.church_name || 'Greater Works City Church');
-  const [shortName, setShortName] = useState(settings.short_name || 'GWCC');
-  const [seniorPastor, setSeniorPastor] = useState(settings.senior_pastor || 'Prophet Elisha K. Richard');
-  const [generalSecretary, setGeneralSecretary] = useState(settings.general_secretary || 'Tamekloe Clara Gaewornu');
-  const [tagline, setTagline] = useState(settings.tagline || 'Exceeding Abundantly Above All We Ask or Think');
-  const [branchName, setBranchName] = useState(settings.branch_name || 'Joma Main Assembly');
+  const [churchName, setChurchName] = useState(settings.church_name || 'Church Management System');
+  const [shortName, setShortName] = useState(settings.short_name || 'CMS');
+  const [seniorPastor, setSeniorPastor] = useState(settings.senior_pastor || 'Senior Pastor');
+  const [generalSecretary, setGeneralSecretary] = useState(settings.general_secretary || 'General Secretary');
+  const [tagline, setTagline] = useState(settings.tagline || 'Faithful, organized, and ready to serve');
+  const [branchName, setBranchName] = useState(settings.branch_name || 'Main Branch');
   const [logoUrl, setLogoUrl] = useState(settings.logo_url || '/assets/logo.png');
-  const [location, setLocation] = useState(settings.location || 'Joma, Greater Accra, Ghana');
-  const [address, setAddress] = useState(settings.address || 'Joma New Site, Off Ablekuma-Joma Highway');
-  const [gpsAddress, setGpsAddress] = useState(settings.gps_address || 'GA-183-4921');
-  const [phone, setPhone] = useState(settings.phone || '+233 24 123 4567');
-  const [email, setEmail] = useState(settings.email || 'info@greaterworkscitychurch.org');
-  const [currency, setCurrency] = useState(settings.currency || 'GHS');
-  const [currencySymbol, setCurrencySymbol] = useState(settings.currency_symbol || 'GH₵');
-  const [timezone, setTimezone] = useState(settings.timezone || 'Africa/Accra (GMT)');
+  const [location, setLocation] = useState(settings.location || 'City, Country');
+  const [address, setAddress] = useState(settings.address || 'Main Street, City');
+  const [gpsAddress, setGpsAddress] = useState(settings.gps_address || 'GPS-0000');
+  const [phone, setPhone] = useState(settings.phone || '+000 000 0000');
+  const [email, setEmail] = useState(settings.email || 'admin@example.org');
+  const [currency, setCurrency] = useState(settings.currency || 'USD');
+  const [currencySymbol, setCurrencySymbol] = useState(settings.currency_symbol || '$');
+  const [timezone, setTimezone] = useState(settings.timezone || 'UTC');
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   // Financial Accounts & MoMo Configuration State (persisted in localStorage)
   const [momoNumber, setMomoNumber] = useState(() => {
-    return localStorage.getItem('gwcc_momo_number') || '055 892 4110';
+    return localStorage.getItem('gwcc_momo_number') || '';
   });
   const [momoAccountName, setMomoAccountName] = useState(() => {
-    return localStorage.getItem('gwcc_momo_name') || 'GREATER WORKS CITY CHURCH';
+    return localStorage.getItem('gwcc_momo_name') || '';
   });
   const [telecelNumber, setTelecelNumber] = useState(() => {
-    return localStorage.getItem('gwcc_telecel_number') || '020 741 2299';
+    return localStorage.getItem('gwcc_telecel_number') || '';
   });
   const [bankName, setBankName] = useState(() => {
-    return localStorage.getItem('gwcc_bank_name') || 'GCB Bank / Ecobank Ghana';
+    return localStorage.getItem('gwcc_bank_name') || '';
   });
   const [bankAccountNumber, setBankAccountNumber] = useState(() => {
-    return localStorage.getItem('gwcc_bank_account') || '1441002938472';
+    return localStorage.getItem('gwcc_bank_account') || '';
   });
   const [bankBranch, setBankBranch] = useState(() => {
-    return localStorage.getItem('gwcc_bank_branch') || 'Ablekuma / Weija Branch';
+    return localStorage.getItem('gwcc_bank_branch') || '';
   });
 
   // Weekly Services Schedule (persisted in localStorage)
   const [sundayServiceTime, setSundayServiceTime] = useState(() => {
-    return localStorage.getItem('gwcc_sunday_time') || '08:30 AM - 11:30 AM';
+    return localStorage.getItem('gwcc_sunday_time') || '';
   });
   const [midweekServiceTime, setMidweekServiceTime] = useState(() => {
-    return localStorage.getItem('gwcc_midweek_time') || 'Wednesdays 06:30 PM - 08:30 PM';
+    return localStorage.getItem('gwcc_midweek_time') || '';
   });
   const [allNightServiceTime, setAllNightServiceTime] = useState(() => {
-    return localStorage.getItem('gwcc_allnight_time') || 'Last Friday of Month 10:00 PM - 04:00 AM';
+    return localStorage.getItem('gwcc_allnight_time') || '';
   });
   const [cellMeetingTime, setCellMeetingTime] = useState(() => {
-    return localStorage.getItem('gwcc_cell_time') || 'Wednesdays / Saturdays 07:00 PM';
+    return localStorage.getItem('gwcc_cell_time') || '';
   });
 
   // Supabase Credentials Form state
@@ -610,7 +610,7 @@ export const SettingsPage: React.FC = () => {
                     value={seniorPastor}
                     onChange={(e) => setSeniorPastor(e.target.value)}
                     className="w-full px-3 py-2 border border-emerald-300 bg-emerald-50/40 rounded-lg text-xs font-bold text-emerald-950 focus:outline-emerald-600"
-                    placeholder="Prophet Elisha K. Richard"
+                    placeholder="Enter senior pastor name"
                   />
                 </div>
               </div>
@@ -624,7 +624,7 @@ export const SettingsPage: React.FC = () => {
                     value={generalSecretary}
                     onChange={(e) => setGeneralSecretary(e.target.value)}
                     className="w-full px-3 py-2 border border-blue-300 bg-blue-50/40 rounded-lg text-xs font-bold text-blue-950 focus:outline-blue-600"
-                    placeholder="Tamekloe Clara Gaewornu"
+                    placeholder="Enter general secretary name"
                   />
                 </div>
                 <div>
@@ -673,7 +673,7 @@ export const SettingsPage: React.FC = () => {
                       value={gpsAddress}
                       onChange={(e) => setGpsAddress(e.target.value.toUpperCase())}
                       className="w-full pl-8 pr-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold text-emerald-800"
-                      placeholder="e.g. GA-183-4921"
+                      placeholder="e.g. GPS-0000"
                     />
                   </div>
                 </div>
@@ -853,7 +853,7 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={momoNumber}
                     onChange={(e) => setMomoNumber(e.target.value)}
-                    placeholder="055 892 4110"
+                    placeholder="Enter mobile money number"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold"
                   />
                 </div>
@@ -863,7 +863,7 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={momoAccountName}
                     onChange={(e) => setMomoAccountName(e.target.value.toUpperCase())}
-                    placeholder="GREATER WORKS CITY CHURCH"
+                    placeholder="Enter merchant account name"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-bold"
                   />
                 </div>
@@ -882,7 +882,7 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={telecelNumber}
                     onChange={(e) => setTelecelNumber(e.target.value)}
-                    placeholder="020 741 2299"
+                    placeholder="Enter merchant number"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold"
                   />
                 </div>
@@ -911,7 +911,7 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={bankAccountNumber}
                     onChange={(e) => setBankAccountNumber(e.target.value)}
-                    placeholder="1441002938472"
+                    placeholder="Enter bank account number"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs font-mono font-bold"
                   />
                 </div>
@@ -921,7 +921,7 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={bankBranch}
                     onChange={(e) => setBankBranch(e.target.value)}
-                    placeholder="Ablekuma / Weija Branch"
+                    placeholder="Enter bank branch"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
                   />
                 </div>

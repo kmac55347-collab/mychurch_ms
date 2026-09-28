@@ -101,8 +101,8 @@ export const AppLayout: React.FC = () => {
         {/* Footer */}
         <footer className="py-4 px-6 text-center text-xs text-slate-600 border-t border-slate-200 bg-white">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 max-w-7xl mx-auto">
-            <span>Greater Works City Church • Joma, Accra, Ghana (Africa/Accra)</span>
-            <span>ChMS Enterprise Edition • Currency: Ghana Cedi (GH₵)</span>
+            <span>Church Management System • City, Country</span>
+            <span>Enterprise Church Ops • Currency: USD ($)</span>
           </div>
         </footer>
       </div>
@@ -111,7 +111,7 @@ export const AppLayout: React.FC = () => {
       <button
         onClick={() => setAiAssistantOpen(true)}
         className="fixed bottom-6 right-6 z-40 p-3.5 bg-gradient-to-r from-emerald-900 to-[#064e3b] hover:from-emerald-800 hover:to-[#047857] text-white rounded-full shadow-2xl hover:shadow-emerald-900/50 flex items-center gap-2 border-2 border-emerald-400/40 hover:scale-105 transition duration-200 group cursor-pointer"
-        title="Open GWCC Pastoral AI Assistant (Gemini 3.8 Flash)"
+        title="Open Pastoral AI Assistant"
       >
         <Sparkles className="w-5 h-5 text-emerald-300 group-hover:rotate-12 transition-transform animate-pulse" />
         <span className="text-xs font-bold hidden sm:inline pr-1">Ask AI Assistant</span>

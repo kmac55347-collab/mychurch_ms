@@ -145,14 +145,14 @@ export const AttendancePage: React.FC = () => {
 
   // Headcount form state
   const [headcountForm, setHeadcountForm] = useState({
-    men: currentHeadcountRecord?.men ?? 75,
-    women: currentHeadcountRecord?.women ?? 115,
-    youth: currentHeadcountRecord?.youth ?? 45,
-    children: currentHeadcountRecord?.children ?? 50,
+    men: currentHeadcountRecord?.men ?? 0,
+    women: currentHeadcountRecord?.women ?? 0,
+    youth: currentHeadcountRecord?.youth ?? 0,
+    children: currentHeadcountRecord?.children ?? 0,
     visitors: currentHeadcountRecord?.visitors ?? visitorsCheckedIn.length,
-    ushers_protocol: currentHeadcountRecord?.ushers_protocol ?? 14,
-    online_viewers: currentHeadcountRecord?.online_viewers ?? 65,
-    counted_by: currentHeadcountRecord?.counted_by ?? 'Deacon Kwesi Appiah (Head Usher)',
+    ushers_protocol: currentHeadcountRecord?.ushers_protocol ?? 0,
+    online_viewers: currentHeadcountRecord?.online_viewers ?? 0,
+    counted_by: currentHeadcountRecord?.counted_by ?? '',
     notes: currentHeadcountRecord?.notes ?? '',
   });
 
@@ -167,19 +167,19 @@ export const AttendancePage: React.FC = () => {
         visitors: currentHeadcountRecord.visitors,
         ushers_protocol: currentHeadcountRecord.ushers_protocol,
         online_viewers: currentHeadcountRecord.online_viewers,
-        counted_by: currentHeadcountRecord.counted_by || 'Deacon Kwesi Appiah (Head Usher)',
+        counted_by: currentHeadcountRecord.counted_by || '',
         notes: currentHeadcountRecord.notes || '',
       });
     } else {
       setHeadcountForm({
-        men: 75,
-        women: 115,
-        youth: 45,
-        children: 50,
-        visitors: visitorsCheckedIn.length || 15,
-        ushers_protocol: 14,
-        online_viewers: 65,
-        counted_by: 'Deacon Kwesi Appiah (Head Usher)',
+        men: 0,
+        women: 0,
+        youth: 0,
+        children: 0,
+        visitors: visitorsCheckedIn.length,
+        ushers_protocol: 0,
+        online_viewers: 0,
+        counted_by: '',
         notes: '',
       });
     }
@@ -275,7 +275,7 @@ export const AttendancePage: React.FC = () => {
         visitors: 0,
         ushers_protocol: 0,
         online_viewers: 0,
-        counted_by: 'Deacon Kwesi Appiah (Head Usher)',
+        counted_by: '',
         notes: '',
       });
       info('Counters reset to zero.');
@@ -438,9 +438,9 @@ export const AttendancePage: React.FC = () => {
   }, [headcountForm]);
 
   // Expected capacity comparison
-  const capacityTarget = selectedService?.expected_attendance || 300;
+  const capacityTarget = selectedService?.expected_attendance || 0;
   const capacityPercent = Math.min(
-    Math.round((totalAuditorium / capacityTarget) * 100),
+    capacityTarget > 0 ? Math.round((totalAuditorium / capacityTarget) * 100) : 0,
     150
   );
 
@@ -614,7 +614,9 @@ export const AttendancePage: React.FC = () => {
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-black text-slate-900">{capacityPercent}%</span>
-            <span className="text-xs text-slate-400">/ {capacityTarget} seats</span>
+            <span className="text-xs text-slate-400">
+              / {capacityTarget > 0 ? `${capacityTarget} seats` : 'capacity not set'}
+            </span>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden">
             <div
@@ -1170,7 +1172,7 @@ export const AttendancePage: React.FC = () => {
                   type="text"
                   value={headcountForm.counted_by}
                   onChange={(e) => setHeadcountForm({ ...headcountForm, counted_by: e.target.value })}
-                  placeholder="e.g. Deacon Kwesi Appiah (Head Usher)"
+                  placeholder="Enter usher or verifier name"
                   className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl bg-slate-50 focus:bg-white focus:outline-teal-600 font-medium"
                 />
               </div>

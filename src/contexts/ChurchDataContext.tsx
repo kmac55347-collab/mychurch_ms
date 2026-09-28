@@ -205,10 +205,10 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [settings, setSettings] = useState<ChurchSettings>(() => {
     const loaded = loadFromStorage('settings', initialSettings);
     const seniorPastor = (!loaded.senior_pastor || loaded.senior_pastor.includes('Agyemang-Prempeh') || loaded.senior_pastor.includes('Emmanuel'))
-      ? 'Prophet Elisha K. Richard'
+      ? 'Senior Pastor'
       : loaded.senior_pastor;
     const generalSecretary = (!loaded.general_secretary)
-      ? 'Tamekloe Clara Gaewornu'
+      ? 'General Secretary'
       : loaded.general_secretary;
     return {
       ...initialSettings,
@@ -570,14 +570,14 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     });
   };
 
-  // Helper to generate next Member ID: GWCC-000001
+  // Helper to generate the next member ID.
   const generateMemberId = () => {
     const numbers = members.map((m) => {
-      const match = m.member_id.match(/GWCC-(\d+)/);
+      const match = m.member_id.match(/MEMBER-(\d+)/);
       return match ? parseInt(match[1], 10) : 0;
     });
     const maxNum = numbers.length > 0 ? Math.max(...numbers) : 0;
-    return `GWCC-${String(maxNum + 1).padStart(6, '0')}`;
+    return `MEMBER-${String(maxNum + 1).padStart(6, '0')}`;
   };
 
   // Helper to generate next Tithe Number: T-1049
@@ -1090,6 +1090,7 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       balance,
       status,
       created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
     setPledges((prev) => [newRecord, ...prev]);
 
@@ -1109,7 +1110,7 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     setPledges((prev) =>
       prev.map((p) => {
         if (p.id === id) {
-          const updatedPledge = { ...p, ...updates };
+          const updatedPledge = { ...p, ...updates, updated_at: new Date().toISOString() };
           if (updates.amount_pledged !== undefined || updates.amount_paid !== undefined) {
             const pledged = updates.amount_pledged ?? p.amount_pledged;
             const paid = updates.amount_paid ?? p.amount_paid;
@@ -1156,6 +1157,7 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
             amount_paid: newPaid,
             balance: newBalance,
             status: newStatus,
+            updated_at: new Date().toISOString(),
           };
           affectedPledge = updated;
           logAction(
@@ -1527,7 +1529,7 @@ export const ChurchDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     } catch {
       // Ignore
     }
-    logAction('RESET_SYSTEM', 'System', 'Cleared mock data and reset to empty operational state');
+    logAction('RESET_SYSTEM', 'System', 'Cleared demo data and reset to an empty operational state');
   };
 
   const contextValue = React.useMemo<ChurchDataContextType>(

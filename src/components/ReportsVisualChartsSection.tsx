@@ -62,64 +62,36 @@ export const ReportsVisualChartsSection: React.FC<ReportsVisualChartsSectionProp
 
   // 1. FINANCIAL TRENDS AGGREGATION (Monthly & Live)
   const financialData = useMemo(() => {
-    // Baseline 6-month historical trajectory for Greater Works City Church (Apr - Sep 2026)
-    // Updated with live context giving & expenses
+    // Aggregate the selected six-month reporting window from live ledger records.
     const months = [
-      { key: '2026-04', month: 'Apr 2026', short: 'Apr', baseIncome: 14200, baseExpense: 9800 },
-      { key: '2026-05', month: 'May 2026', short: 'May', baseIncome: 16800, baseExpense: 11200 },
-      { key: '2026-06', month: 'Jun 2026', short: 'Jun', baseIncome: 18950, baseExpense: 12400 },
-      { key: '2026-07', month: 'Jul 2026', short: 'Jul', baseIncome: 21400, baseExpense: 14100 },
-      { key: '2026-08', month: 'Aug 2026', short: 'Aug', baseIncome: 23600, baseExpense: 15300 },
-      { key: '2026-09', month: 'Sep 2026', short: 'Sep', baseIncome: 0, baseExpense: 0 },
+      { key: '2026-04', month: 'Apr 2026', short: 'Apr' },
+      { key: '2026-05', month: 'May 2026', short: 'May' },
+      { key: '2026-06', month: 'Jun 2026', short: 'Jun' },
+      { key: '2026-07', month: 'Jul 2026', short: 'Jul' },
+      { key: '2026-08', month: 'Aug 2026', short: 'Aug' },
+      { key: '2026-09', month: 'Sep 2026', short: 'Sep' },
     ];
 
-    // Compute live values for September from actual database records
-    const sepGiving = giving.filter((g) => g.date.startsWith('2026-09'));
-    const sepIncome = sepGiving.reduce((sum, g) => sum + g.amount, 0);
-
-    const sepExp = expenses.filter((e) => e.date.startsWith('2026-09'));
-    const sepExpenseTotal = sepExp.reduce((sum, e) => sum + e.amount, 0);
-
-    // Tithes vs Offerings vs Building in September
-    const sepTithes = sepGiving
-      .filter((g) => g.category.toLowerCase().includes('tithe'))
-      .reduce((s, g) => s + g.amount, 0);
-    const sepOfferings = sepGiving
-      .filter((g) => g.category.toLowerCase().includes('offering'))
-      .reduce((s, g) => s + g.amount, 0);
-    const sepBuilding = sepGiving
-      .filter((g) => g.category.toLowerCase().includes('building'))
-      .reduce((s, g) => s + g.amount, 0);
-
-    return months.map((m, idx) => {
-      let income = m.baseIncome;
-      let expense = m.baseExpense;
-
-      if (m.key === '2026-09') {
-        // Use live database data or baseline if higher
-        income = Math.max(26850, sepIncome);
-        expense = Math.max(16470, sepExpenseTotal);
-      }
-
-      // Check if there are other months with recorded live data
-      const liveIncome = giving
-        .filter((g) => g.date.startsWith(m.key))
-        .reduce((sum, g) => sum + g.amount, 0);
-      if (liveIncome > income) income = liveIncome;
-
-      const liveExp = expenses
+    return months.map((m) => {
+      const monthGiving = giving.filter((g) => g.date.startsWith(m.key));
+      const income = monthGiving.reduce((sum, g) => sum + g.amount, 0);
+      const expense = expenses
         .filter((e) => e.date.startsWith(m.key))
         .reduce((sum, e) => sum + e.amount, 0);
-      if (liveExp > expense) expense = liveExp;
 
       const netSurplus = income - expense;
       const marginPercent = Math.round((netSurplus / (income || 1)) * 100);
 
-      // Category breakdown estimates
-      const tithes = m.key === '2026-09' ? Math.max(12400, sepTithes) : Math.round(income * 0.45);
-      const offerings = m.key === '2026-09' ? Math.max(8600, sepOfferings) : Math.round(income * 0.35);
-      const buildingFund = m.key === '2026-09' ? Math.max(3800, sepBuilding) : Math.round(income * 0.15);
-      const otherGiving = Math.max(0, income - (tithes + offerings + buildingFund));
+      const tithes = monthGiving
+        .filter((g) => g.category.toLowerCase().includes('tithe'))
+        .reduce((sum, g) => sum + g.amount, 0);
+      const offerings = monthGiving
+        .filter((g) => g.category.toLowerCase().includes('offering'))
+        .reduce((sum, g) => sum + g.amount, 0);
+      const buildingFund = monthGiving
+        .filter((g) => g.category.toLowerCase().includes('building'))
+        .reduce((sum, g) => sum + g.amount, 0);
+      const otherGiving = Math.max(0, income - tithes - offerings - buildingFund);
 
       return {
         month: m.month,

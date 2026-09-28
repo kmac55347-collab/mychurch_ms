@@ -74,18 +74,18 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 p-0.5 shadow-2xs shrink-0 flex items-center justify-center">
             <img
               src="/assets/logo.png"
-              alt="GWCC"
+              alt="CMS"
               className="w-full h-full object-contain"
               loading="eager"
             />
           </div>
-          <span className="font-bold text-xs text-slate-900 truncate">GWCC</span>
+          <span className="font-bold text-xs text-slate-900 truncate">CMS</span>
         </div>
 
         <div className="hidden sm:flex items-center gap-2 text-xs text-slate-600">
           <img
             src="/assets/logo.png"
-            alt="GWCC Logo"
+            alt="Church Logo"
             className="w-6 h-6 object-contain rounded"
             loading="eager"
           />
@@ -389,10 +389,10 @@ export const Header: React.FC<HeaderProps> = ({
                     className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 rounded-lg transition"
                   >
                     <LogOut className="w-3.5 h-3.5 text-red-600" />
-                    <span>Sign Out of GWCC Portal</span>
+                    <span>Sign Out of Staff Portal</span>
                   </button>
                   <div className="px-2 py-0.5 text-[10px] text-slate-400">
-                    Greater Works City Church • Joma, Accra
+                    Church Management System • City, Country
                   </div>
                 </div>
               </div>
