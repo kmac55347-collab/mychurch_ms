@@ -58,6 +58,14 @@ import { useToast } from '../contexts/ToastContext';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { GivingCategory, PaymentMethod, GivingRecord, ExpenseRecord, Member } from '../types/database.types';
 import { formatGHS, cleanGhanaPhone } from '../lib/currencyUtils';
+import {
+  buildRecentMonthSeries,
+  getCurrentMonthKey,
+  getPreviousMonthKey,
+  isDateInCurrentWeek,
+  isDateInMonth,
+  todayISO,
+} from '../lib/financeDateUtils';
 
 // Modals
 import { OfficialReceiptModal } from '../components/finance/OfficialReceiptModal';
@@ -266,21 +274,14 @@ export const FinancePage: React.FC = () => {
 
   // Monthly Cashflow Trend
   const monthlyCashflowData = useMemo(() => {
-    const months = [
-      { key: '2026-04', month: 'Apr 2026', shortMonth: 'Apr' },
-      { key: '2026-05', month: 'May 2026', shortMonth: 'May' },
-      { key: '2026-06', month: 'Jun 2026', shortMonth: 'Jun' },
-      { key: '2026-07', month: 'Jul 2026', shortMonth: 'Jul' },
-      { key: '2026-08', month: 'Aug 2026', shortMonth: 'Aug' },
-      { key: '2026-09', month: 'Sep 2026', shortMonth: 'Sep' },
-    ];
+    const months = buildRecentMonthSeries(new Date(), 6);
 
     return months.map(({ key, month, shortMonth }) => {
       const income = giving
-        .filter((record) => record.date.startsWith(key))
+        .filter((record) => isDateInMonth(record.date, key))
         .reduce((sum, record) => sum + record.amount, 0);
       const monthlyExpenses = expenses
-        .filter((record) => record.date.startsWith(key))
+        .filter((record) => isDateInMonth(record.date, key))
         .reduce((sum, record) => sum + record.amount, 0);
 
       return { month, shortMonth, income, expenses: monthlyExpenses, net: income - monthlyExpenses };
@@ -363,6 +364,10 @@ export const FinancePage: React.FC = () => {
   }, [departmentBudgets, expenses]);
 
   // Filtered Giving Records
+  const currentMonthKey = getCurrentMonthKey();
+  const previousMonthKey = getPreviousMonthKey();
+  const todayStr = todayISO();
+
   const filteredGiving = useMemo(() => {
     return giving.filter((g) => {
       const term = givingSearch.toLowerCase();
@@ -380,20 +385,19 @@ export const FinancePage: React.FC = () => {
       const matchesService = givingServiceFilter === 'all' || (g.service_name && g.service_name.includes(givingServiceFilter));
 
       let matchesDate = true;
-      const todayStr = '2026-09-24';
       if (givingDateFilter === 'today') {
-        matchesDate = g.date === todayStr || g.date.startsWith('2026-09-24');
+        matchesDate = g.date === todayStr;
       } else if (givingDateFilter === 'this_week') {
-        matchesDate = g.date >= '2026-09-18';
+        matchesDate = isDateInCurrentWeek(g.date);
       } else if (givingDateFilter === 'this_month') {
-        matchesDate = g.date.startsWith('2026-09');
+        matchesDate = isDateInMonth(g.date, currentMonthKey);
       } else if (givingDateFilter === 'last_month') {
-        matchesDate = g.date.startsWith('2026-08');
+        matchesDate = isDateInMonth(g.date, previousMonthKey);
       }
 
       return matchesSearch && matchesCategory && matchesMethod && matchesService && matchesDate;
     });
-  }, [giving, givingSearch, givingCategoryFilter, givingMethodFilter, givingServiceFilter, givingDateFilter]);
+  }, [giving, givingSearch, givingCategoryFilter, givingMethodFilter, givingServiceFilter, givingDateFilter, currentMonthKey, previousMonthKey, todayStr]);
 
   const filteredGivingTotal = useMemo(
     () => filteredGiving.reduce((sum, g) => sum + g.amount, 0),
@@ -417,14 +421,14 @@ export const FinancePage: React.FC = () => {
 
       let matchesDate = true;
       if (expenseDateFilter === 'this_month') {
-        matchesDate = e.date.startsWith('2026-09');
+        matchesDate = isDateInMonth(e.date, currentMonthKey);
       } else if (expenseDateFilter === 'last_month') {
-        matchesDate = e.date.startsWith('2026-08');
+        matchesDate = isDateInMonth(e.date, previousMonthKey);
       }
 
       return matchesSearch && matchesCategory && matchesDate;
     });
-  }, [expenses, expenseSearch, expenseCategoryFilter, expenseDateFilter]);
+  }, [expenses, expenseSearch, expenseCategoryFilter, expenseDateFilter, currentMonthKey, previousMonthKey]);
 
   const filteredExpensesTotal = useMemo(
     () => filteredExpenses.reduce((sum, e) => sum + e.amount, 0),
@@ -470,7 +474,7 @@ export const FinancePage: React.FC = () => {
     return Array.from(memberTitheMap.values())
       .map((row) => {
         let status: 'consistent' | 'periodic' | 'needs_care' = 'needs_care';
-        if (row.recordsCount >= 2 || (row.lastDate && row.lastDate.startsWith('2026-09'))) {
+        if (row.recordsCount >= 2 || (row.lastDate && isDateInMonth(row.lastDate, currentMonthKey))) {
           status = 'consistent';
         } else if (row.recordsCount > 0) {
           status = 'periodic';
@@ -494,7 +498,7 @@ export const FinancePage: React.FC = () => {
         return matchesTerm && matchesStatus;
       })
       .sort((a, b) => b.totalAmount - a.totalAmount);
-  }, [members, giving, titherSearch, titherStatusFilter]);
+  }, [members, giving, titherSearch, titherStatusFilter, currentMonthKey]);
 
   // Sunday Offering Counter Calculated Total
   const calculatedCashTotal = useMemo(() => {
